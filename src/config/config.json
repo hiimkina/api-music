@@ -1,8 +1,9 @@
 {
   "mysql": {
+    "connectionLimit": 5,
     "host": "localhost",
     "user": "root",
-    "password": "toto1234",
+    "password": "Toto-1234",
     "database": "music"
   }
 }

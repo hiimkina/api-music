@@ -1,22 +1,54 @@
-import mysql, {Connection, MysqlError} from 'mysql';
+import mysql, {MysqlError, Pool, PoolConnection} from 'mysql';
 import Artist from "../model/Artist";
 
 const CONFIG = require('../config/config.json');
 
 export default class ArtistRepository {
-    connection: Connection;
+    connectionPool: Pool;
 
     constructor() {
-        this.connection = mysql.createConnection(CONFIG.mysql);
+        this.connectionPool = mysql.createPool(CONFIG.mysql);
     }
 
-    create(artist: Artist):void {
-        this.connection.connect((error: MysqlError) => {
-            if (error) throw new Error(`Error connecting to MySQL: ${error.message}`);
-            let query = `INSERT INTO artists (name) VALUES ('${artist.name}')`;
-            this.connection.query(query, (error) => {
-                if (error) throw new Error(`Error inserting an artist: ${error.message}`)
-            })
+    create(artist: Artist):Promise<number> {
+        return new Promise((resolve) => {
+            this.connectionPool.getConnection((error: MysqlError, connection: PoolConnection) => {
+                if (error) throw new Error(`Error connecting to MySQL: ${error.message}`);
+                let query = `INSERT INTO artists (name) VALUES ('${artist.name}')`;
+                connection.query(query, (error: MysqlError, result) => {
+                    connection.release();
+                    if (error) throw new Error(`Error inserting an artist: ${error.message}`);
+                    resolve(result.insertId);
+                })
+            });
         });
+    }
+
+    getFromId(id: number):Promise<Artist|undefined> {
+        return new Promise((resolve) => {
+            this.connectionPool.getConnection((error: MysqlError, connection: PoolConnection) => {
+                if (error) throw new Error(`Error connecting to MySQL: ${error.message}`);
+                let query = `SELECT * FROM artists WHERE id='${id}'`;
+                connection.query(query, (error: MysqlError, results: Array<Artist>) => {
+                    connection.release();
+                    if (error) throw new Error(`Error getting an artist: ${error.message}`);
+                    resolve(results.length === 1 ? results.pop() : undefined);
+                })
+            })}
+        );
+    }
+
+    getFromName(name: string):Promise<Artist|undefined> {
+        return new Promise((resolve) => {
+            this.connectionPool.getConnection((error: MysqlError, connection: PoolConnection) => {
+                if (error) throw new Error(`Error connecting to MySQL: ${error.message}`);
+                let query = `SELECT * FROM artists WHERE name='${name}'`;
+                connection.query(query, (error: MysqlError, results: Array<Artist>) => {
+                    connection.release();
+                    if (error) throw new Error(`Error getting an artist: ${error.message}`);
+                    resolve(results.length === 1 ? results.pop() : undefined);
+                })
+            })}
+        );
     }
 }

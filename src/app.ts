@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 8000;
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const artistRouter = require('./routes/artist');
+const albumRouter = require('./routes/album');
 
 app.listen(PORT, ():void => {
     console.log(`Server Runnning at http://localhost:8000`);
@@ -30,6 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/artist', artistRouter);
+app.use('/api/v1/album', albumRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
