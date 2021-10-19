@@ -22,6 +22,10 @@ export default class ArtistService {
         }
     }
 
+    async getArtistFromTrackId(trackId: number):Promise<Array<Artist>> {
+        return this.artistRepository.getFromTrackId(trackId);
+    }
+
     async getArtistFromId(id: number):Promise<Artist|undefined> {
         return this.artistRepository.getFromId(id);
     }

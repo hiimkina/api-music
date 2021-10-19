@@ -49,4 +49,19 @@ export default class TrackRepository {
             });
         });
     }
+
+    getRecentTracks():Promise<Array<Track>> {
+        return new Promise((resolve) => {
+            this.connectionPool.getConnection((error: MysqlError, connection: PoolConnection) => {
+                if (error) throw new Error(`Error connecting to MySQL: ${error.message}`);
+                let query = `SELECT * FROM tracks ORDER BY id DESC LIMIT 10`;
+                console.log(query);
+                connection.query(query, (error: MysqlError, results: Array<Track>) => {
+                    connection.release();
+                    if (error) throw new Error(`Error getting a track: ${error.message}`);
+                    resolve(results);
+                })
+            });
+        });
+    }
 }

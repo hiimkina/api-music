@@ -51,6 +51,21 @@ export default class TrackService {
         }
     }
 
+    async getRecentTracks():Promise<Array<Track>> {
+        let tracksArray:Array<Track> = await this.trackRepository.getRecentTracks();
+        let promiseArray:Array<Promise<Track>> = tracksArray.map((track: Track) => {
+            return new Promise(async (resolve) => {
+                if (track.id !== undefined) {
+                    track.artists = await this.artistService.getArtistFromTrackId(track.id);
+                    resolve(track);
+                } else {
+                    throw new Error('Track id is undefined');
+                }
+            });
+        });
+        return await Promise.all(promiseArray);
+    }
+
     async streamTrack(name: string, albumId: number):Promise<string> {
         if(await this.checkIfTrackExists(name, albumId)) {
             let album:Album|undefined = await this.albumService.getAlbumFromId(albumId);

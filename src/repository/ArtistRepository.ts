@@ -24,6 +24,20 @@ export default class ArtistRepository {
         });
     }
 
+    getFromTrackId(trackId: number):Promise<Array<Artist>>  {
+        return new Promise((resolve) => {
+            this.connectionPool.getConnection((error: MysqlError, connection: PoolConnection) => {
+                if (error) throw new Error(`Error connecting to MySQL: ${error.message}`);
+                let query = `SELECT * FROM artists WHERE id IN (SELECT artist_id FROM tracks_to_artists WHERE track_id=${trackId})`;
+                connection.query(query, (error: MysqlError, result) => {
+                    connection.release();
+                    if (error) throw new Error(`Error inserting an artist: ${error.message}`);
+                    resolve(result);
+                })
+            });
+        });
+    }
+
     getFromId(id: number):Promise<Artist|undefined> {
         return new Promise((resolve) => {
             this.connectionPool.getConnection((error: MysqlError, connection: PoolConnection) => {

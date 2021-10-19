@@ -25,4 +25,10 @@ router.get('/', (req, res, next) => {
     });
 })
 
+router.get('/recents', (req, res, next) => {
+    trackService.getRecentTracks().then((tracks: Array<Track>) => {
+        res.send(tracks);
+    })
+})
+
 module.exports = router;
