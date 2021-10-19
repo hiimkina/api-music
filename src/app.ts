@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import bodyParser from "body-parser";
 import fileUpload from 'express-fileupload';
+import cors from 'cors';
 
 const app:Application = express();
 const PORT = process.env.PORT || 8000;
@@ -28,7 +29,10 @@ app.use(cookieParser());
 app.use(bodyParser.json({limit: '100mb'}));
 app.use(bodyParser.urlencoded({limit: '100mb'}));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(fileUpload({createParentPath: true}))
+app.use(fileUpload({createParentPath: true}));
+app.use(cors({
+    origin: '*'
+}))
 
 // Request mappings
 app.use('/', indexRouter);

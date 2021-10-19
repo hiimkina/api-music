@@ -57,6 +57,10 @@ export default class TrackService {
             return new Promise(async (resolve) => {
                 if (track.id !== undefined) {
                     track.artists = await this.artistService.getArtistFromTrackId(track.id);
+                    let album = await this.albumService.getAlbumFromId(track.album_id ? track.album_id : 0);
+                    if (album !== undefined) {
+                        track.album = album;
+                    }
                     resolve(track);
                 } else {
                     throw new Error('Track id is undefined');

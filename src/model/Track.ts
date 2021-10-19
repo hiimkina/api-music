@@ -8,6 +8,7 @@ export default class Track {
     album: Album;
     duration: number;
     artists: Array<Artist>
+    album_id?: number;
 
 constructor(name: string, album: Album, duration: number, artists: Array<Artist>, id?: number) {
         this.id = id ? id : undefined;
