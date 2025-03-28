@@ -1,10 +1,15 @@
 {
-  "mysql": {
-    "connectionLimit": 5,
-    "host": "localhost",
-    "user": "root",
-    "password": "Toto-1234",
-    "database": "music"
-  },
-  "uploadDirectory": "./uploads"
+  "storage": {
+    "s3": {
+      "enabled": "false",
+      "accessKey": "",
+      "secretKey": "",
+      "endpoint": "",
+      "bucketName": ""
+    },
+    "filesystem": {
+      "enabled": "true",
+      "path": "/Users/cpiovesan/Documents/code/personal/api-music-refactor-next/localstorage/"
+    }
+  }
 }
